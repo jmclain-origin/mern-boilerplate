@@ -1,7 +1,9 @@
 {
     "references": [{
         "path": "./client",
+    }, {
+        "path": "./server",
     }],
     "exclude": ["node_modules"],
-    "include": ["client/**/*.ts", "client/**/*.tsx"],
+    "include": ["client/**/*.ts", "client/**/*.tsx", "server/**/*.ts", "server/**/*.tsx"],
 }
