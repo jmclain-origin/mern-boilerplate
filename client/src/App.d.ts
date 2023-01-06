@@ -1,3 +1,3 @@
-type Props = {};
-declare const App: ({}: Props) => JSX.Element;
+import { FC } from 'react';
+declare const App: FC;
 export default App;
