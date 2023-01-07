@@ -20,6 +20,4 @@ app.get('/api/test', (_request, response) => {
     response.end();
 });
 
-console.log('node env', process.env.NODE_ENV, process.env.TEST);
-
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));

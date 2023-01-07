@@ -8,6 +8,9 @@ module.exports = {
     entry: './server/src/index.ts',
     mode: process.env.NODE_ENV,
     target: 'node',
+    devServer: {
+        watchFiles: ['dist/**/*.js'],
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'server.js',

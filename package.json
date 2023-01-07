@@ -4,6 +4,7 @@
     "license": "MIT",
     "scripts": {
         "start:dev": "conc \"yarn dev:build-client\" \"yarn dev:build-server\"",
+        "start:webpack-serve": "webpack serve --config webpack.config.server.js --mode development",
         "build:app": "yarn build:client && yarn build:server",
         "dev:build-client": "webpack --config webpack.config.client.js --watch --mode development",
         "dev:build-server": "webpack --config webpack.config.server.js --watch --mode development",
@@ -12,8 +13,7 @@
         "build:client": "webpack --config webpack.config.client.js --mode production",
         "build:server": "webpack --config webpack.config.server.js --mode production",
         "lint": "eslint server client --ext .js,.jsx,.ts,.tsx",
-        "prepare": "husky install",
-        "testEnv": "ENV=development node testRun.js"
+        "prepare": "husky install"
     },
     "lint-staged": {
         "**/*.{js,jsx,ts,tsx}": [
