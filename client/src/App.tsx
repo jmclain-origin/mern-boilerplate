@@ -7,7 +7,7 @@ const App: FC = () => {
             <h1>Hello World</h1>
             <h2>from React App</h2>
             <h3>Update the count and edit src/App.tsx, state is preserved</h3>
-            <p>some stuff here</p>
+            <p>webpack serve</p>
             <button onClick={() => setCount((c) => c + 1)}>Count - {count}</button>
         </div>
     );

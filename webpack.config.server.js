@@ -3,10 +3,13 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const NodemonPlugin = require('nodemon-webpack-plugin');
+const ESlintPlugin = require('eslint-webpack-plugin');
+
+const isDev = process.env.NODE_ENV === 'development';
 
 module.exports = {
     entry: './server/src/index.ts',
-    mode: process.env.NODE_ENV,
+    mode: isDev ? 'development' : 'production',
     target: 'node',
     devServer: {
         watchFiles: ['dist/**/*.js'],
@@ -32,6 +35,9 @@ module.exports = {
             script: path.resolve(__dirname, 'dist', 'server.js'),
             watch: path.resolve(__dirname, 'dist'),
             verbose: true,
+        }),
+        new ESlintPlugin({
+            extensions: ['js', 'ts'],
         }),
     ],
 };
