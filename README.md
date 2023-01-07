@@ -1,6 +1,6 @@
 # MERN stack boilerplate
 
-The goal of this repo is to provide a starting point for a full stack web application using the MERN stack. I had inspiration for this boilerplate because I come across a lot of other boilerplates that use a ployrepo approach and also don't quite meet the requirements I've seeked. So in this project I'm learning and implementing ways to handle all dependencies in one package json file. Also avoid react-scripts dependencies from cra and handling configurations for build manually using webpack. Another concept behind this project is for team development. So implenting eslinting and pre-commit hooks to enforce best practices was another motivator.
+The goal of this repo is to provide a starting point for a full stack web application using the MERN stack. I had inspiration for this boilerplate because I come across a lot of other boilerplates that use a ployrepo approach and also don't quite meet the requirements I've seeked. So in this project I'm learning and implementing ways to handle all dependencies in one package json file. Also avoid react-scripts dependencies from cra and handling configurations for build manually using webpack. Another concept behind this project is for team development. So implenting eslinting and pre-commit hooks to enforce best practices was another motivator. Finally I've had a desire to learn and become more skillful in devops.
 
 This is by far completed as of yet, there are a lot more features I wish to implement for the base boilerplate.
 
