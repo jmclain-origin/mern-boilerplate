@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "target": "ESNext",
+      "target": "ES6",
       "lib": [
         "DOM",
         "DOM.Iterable",
@@ -13,7 +13,6 @@
       "noFallthroughCasesInSwitch": true,
       "noUnusedParameters": true,
       "noImplicitReturns": true,
-      // "noUnusedLocals": true,
       "module": "esnext",
       "moduleResolution": "node",
       "resolveJsonModule": true,
@@ -22,6 +21,7 @@
       "jsx": "react-jsx",
       "sourceMap": true,
       "composite": true,
+      "types": ["node"],
     },
     "include": ["src/**/*.ts", "src/**/*.tsx"],
   }

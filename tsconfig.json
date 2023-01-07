@@ -5,5 +5,5 @@
         "path": "./client",
     }],
     "exclude": ["node_modules"],
-    "include": ["client/**/*.ts", "client/**/*.tsx", "server/**/*.ts", "server/**/*.tsx"],
+    // "include": ["client/**/*.ts", "client/**/*.tsx", "server/**/*.ts", "server/**/*.tsx", "types"],
 }
