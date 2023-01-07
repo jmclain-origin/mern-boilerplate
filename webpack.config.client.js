@@ -5,7 +5,10 @@ const fs = require('fs');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ESlintPlugin = require('eslint-webpack-plugin');
+// const baseEsLintConfig = require('./.eslintrc.js');
 const dotenv = require('dotenv');
+const isDev = process.env.NODE_ENV === 'development';
 
 module.exports = (_env, operation) => {
     const currentPath = path.join(__dirname);
@@ -24,7 +27,7 @@ module.exports = (_env, operation) => {
     }, {});
 
     return {
-        mode: process.env.NODE_ENV,
+        mode: isDev ? 'development' : 'production',
         entry: './client/src/index.tsx',
         output: {
             path: path.resolve(__dirname, 'dist', 'public'),
@@ -55,6 +58,9 @@ module.exports = (_env, operation) => {
             new MiniCssExtractPlugin(),
             new CopyWebpackPlugin({
                 patterns: [{ from: 'client/public', to: '' }],
+            }),
+            new ESlintPlugin({
+                extensions: ['tsx', 'ts', 'jsx', 'js', 'json'],
             }),
         ],
     };
