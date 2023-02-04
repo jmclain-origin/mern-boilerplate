@@ -3,9 +3,13 @@
 const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ESlintPlugin = require('eslint-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const tailwindcss = require('tailwindcss');
+const autoprefixer = require('autoprefixer');
 const dotenv = require('dotenv');
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -30,7 +34,8 @@ module.exports = (_env, operation) => {
         entry: './client/src/index.tsx',
         output: {
             path: path.resolve(__dirname, 'dist', 'public'),
-            filename: 'bundle.js',
+            filename: '[name].bundle.js',
+            publicPath: '/',
         },
         module: {
             rules: [
@@ -44,19 +49,35 @@ module.exports = (_env, operation) => {
                 },
                 {
                     test: /\.css$/,
-                    use: [MiniCssExtractPlugin.loader, 'css-loader'],
+                    exclude: /node_modules/,
+                    include: path.resolve(__dirname, 'client', 'src'),
+                    use: [
+                        MiniCssExtractPlugin.loader,
+                        'css-loader',
+                        {
+                            loader: 'postcss-loader',
+                            options: { postcssOptions: { indent: 'postcss', plugins: [tailwindcss, autoprefixer] } },
+                        },
+                    ],
                 },
             ],
         },
         devtool: process.env.NODE_ENV === 'production' ? undefined : 'source-map',
         plugins: [
+            new CleanWebpackPlugin({ dangerouslyAllowCleanPatternsOutsideProject: true }),
             new webpack.ProvidePlugin({
                 process: 'process/browser',
             }),
             new webpack.DefinePlugin(envKeys),
-            new MiniCssExtractPlugin(),
+            new MiniCssExtractPlugin({ filename: 'styles/[name].bundle.css', chunkFilename: '[id].[contenthash].css' }),
             new CopyWebpackPlugin({
-                patterns: [{ from: 'public', context: path.resolve(__dirname, 'client') }],
+                patterns: [{ from: path.resolve(__dirname, 'client', 'src', 'assets'), to: 'assets' }],
+            }),
+            new HtmlWebpackPlugin({
+                title: 'webpack and react',
+                favicon: './client/public/favicon.ico',
+                template: './client/public/index.html',
+                filename: 'index.html',
             }),
             new ESlintPlugin({
                 extensions: ['tsx', 'ts', 'jsx', 'js', 'json'],
