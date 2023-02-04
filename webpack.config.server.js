@@ -19,7 +19,7 @@ module.exports = {
         filename: 'server.js',
     },
     resolve: {
-        extensions: ['.ts', '.js'],
+        extensions: ['.ts'],
     },
     module: {
         rules: [
