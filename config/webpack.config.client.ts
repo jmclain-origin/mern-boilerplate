@@ -1,22 +1,23 @@
-/* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path');
-const fs = require('fs');
-const webpack = require('webpack');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ESlintPlugin = require('eslint-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const tailwindcss = require('tailwindcss');
-const autoprefixer = require('autoprefixer');
-const dotenv = require('dotenv');
+import fs from 'fs';
+import webpack, { Configuration } from 'webpack';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import ESlintPlugin from 'eslint-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
+import dotenv from 'dotenv';
+import paths, { RepositoryPaths } from './paths';
+
 const isDev = process.env.NODE_ENV === 'development';
 
-module.exports = (_env, operation) => {
-    const currentPath = path.join(__dirname);
+const { ROOT_DIR, BUILD_OUTPUT_DIR, CLIENT_SRC, CLIENT_ASSETS, CLIENT_PUBLIC }: RepositoryPaths = paths;
+
+const getConfig = (_env: { [key: string]: string }, operation: { [key: string]: string }): Configuration => {
+    const currentPath = ROOT_DIR;
     const basePath = currentPath + '/.env';
-    const envPath = basePath + '.' + operation.mode;
+    const envPath = basePath + '.' + operation?.mode;
 
     const finalPath = fs.existsSync(envPath) ? envPath : basePath;
 
@@ -31,9 +32,9 @@ module.exports = (_env, operation) => {
 
     return {
         mode: isDev ? 'development' : 'production',
-        entry: './client/src/index.tsx',
+        entry: CLIENT_SRC + '/index.tsx',
         output: {
-            path: path.resolve(__dirname, 'dist', 'public'),
+            path: BUILD_OUTPUT_DIR + '/public',
             filename: '[name].bundle.js',
             publicPath: '/',
         },
@@ -50,7 +51,7 @@ module.exports = (_env, operation) => {
                 {
                     test: /\.css$/,
                     exclude: /node_modules/,
-                    include: path.resolve(__dirname, 'client', 'src'),
+                    include: CLIENT_SRC,
                     use: [
                         MiniCssExtractPlugin.loader,
                         'css-loader',
@@ -64,19 +65,19 @@ module.exports = (_env, operation) => {
         },
         devtool: process.env.NODE_ENV === 'production' ? undefined : 'source-map',
         plugins: [
-            new CleanWebpackPlugin({ dangerouslyAllowCleanPatternsOutsideProject: true }),
+            new CleanWebpackPlugin({ dangerouslyAllowCleanPatternsOutsideProject: true, dry: false }),
             new webpack.ProvidePlugin({
                 process: 'process/browser',
             }),
             new webpack.DefinePlugin(envKeys),
             new MiniCssExtractPlugin({ filename: 'styles/[name].bundle.css', chunkFilename: '[id].[contenthash].css' }),
             new CopyWebpackPlugin({
-                patterns: [{ from: path.resolve(__dirname, 'client', 'src', 'assets'), to: 'assets' }],
+                patterns: [{ from: CLIENT_ASSETS, to: 'assets' }],
             }),
             new HtmlWebpackPlugin({
                 title: 'webpack and react',
-                favicon: './client/public/favicon.ico',
-                template: './client/public/index.html',
+                favicon: CLIENT_PUBLIC + '/favicon.ico',
+                template: CLIENT_PUBLIC + '/index.html',
                 filename: 'index.html',
             }),
             new ESlintPlugin({
@@ -85,3 +86,5 @@ module.exports = (_env, operation) => {
         ],
     };
 };
+
+export default getConfig;

@@ -1,8 +1,11 @@
-import express from 'express';
 import path from 'path';
-import dotenv from 'dotenv';
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
-const PORT = process.env.PORT || 5000;
+import express from 'express';
+import environmentVars from '@global/environmentVars';
+
+type ProcVars = typeof environmentVars;
+
+const { PORT, NODE_ENV }: ProcVars = environmentVars;
+
 const app = express();
 
 app.use(express.json());
@@ -13,7 +16,7 @@ app.get('/api/test', (_request, response) => {
     response.end();
 });
 
-if (process.env.NODE_ENV === 'production') {
+if (NODE_ENV === 'production') {
     app.use(express.static(path.resolve(__dirname, 'public')));
     app.get('/', (_request, response) => {
         response.sendFile(__dirname + '/index.html');

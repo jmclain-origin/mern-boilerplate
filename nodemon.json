@@ -1,1 +1,0 @@
-{ "ignore": [".git", "node_modules/", "client"], "verbose": true, "watch": ["dist/src/**/*"] }
