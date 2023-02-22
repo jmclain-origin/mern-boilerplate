@@ -1,6 +1,6 @@
 {
     "name": "mern-boilerplate",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "license": "MIT",
     "scripts": {
         "start": "conc \"yarn start:client\" \"yarn start:server\"",
@@ -10,9 +10,7 @@
         "build:client": "webpack --config config/webpack.config.client.ts --mode production",
         "build:server": "webpack --config config/webpack.config.server.ts --mode production",
         "lint": "eslint server client --ext .js,.jsx,.ts,.tsx",
-        "prepare": "husky install",
-        "dev:server": "tsc --project ./server/tsconfig.json --watch --preserveWatchOutput",
-        "dev:nodemon": "nodemon /dist/src/server.js"
+        "prepare": "husky install"
     },
     "lint-staged": {
         "**/*.{js,jsx,ts,tsx}": [
