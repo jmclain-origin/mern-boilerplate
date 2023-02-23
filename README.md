@@ -9,6 +9,40 @@
 - TypeScript 4
 - Webpack 5
 
+## Development use
+
+### System requirements
+
+- Docker Compose
+- Node.js
+- Yarn
+
+Start up MongoDB docker container by running command
+
+```bash
+docker-compose up -d
+```
+
+### Node Scripts
+
+Start the full stack development application by running command
+
+```bash
+yarn start
+```
+
+Start the backend API server only by running command
+
+```bash
+yarn start:server
+```
+
+Start the frontend client only by running command
+
+```bash
+yarn start:client
+```
+
 ## Features
 
 - Development build watching changes with automatic live reloading

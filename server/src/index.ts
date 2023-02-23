@@ -1,6 +1,7 @@
 import path from 'path';
 import express from 'express';
 import environmentVars from '@global/environmentVars';
+import { connectDB } from './db.config';
 
 type ProcVars = typeof environmentVars;
 
@@ -10,6 +11,8 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+connectDB();
 
 app.get('/api/test', (_request, response) => {
     response.json({ message: 'Hello World!' });
