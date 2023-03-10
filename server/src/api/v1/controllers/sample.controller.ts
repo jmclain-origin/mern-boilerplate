@@ -3,6 +3,12 @@ import Sample from '@models/sample.model';
 
 type BodyI = { name: string; age: number };
 
+/**
+ * @param {BodyI} req.body
+ * @method POST
+ * @returns {Response} 201 - Created
+ * @exception {Error} 400 - Bad Request
+ */
 const createOne = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { name, age }: BodyI = req.body;
@@ -20,6 +26,12 @@ const createOne = async (req: Request, res: Response, next: NextFunction): Promi
     }
 };
 
+/**
+ * @param {String} req.param.id
+ * @method GET
+ * @returns {Response} 200 - Success
+ * @exception {Error} 404 - Not Found
+ */
 const getOne = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const id = req.params.id;
@@ -36,6 +48,9 @@ const getOne = async (req: Request, res: Response, next: NextFunction): Promise<
     }
 };
 
+/**
+ * @returns {Response} 200 - Success
+ */
 const getAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const sample = await Sample.find();
@@ -46,6 +61,13 @@ const getAll = async (req: Request, res: Response, next: NextFunction): Promise<
     }
 };
 
+/**
+ * @param {String} req.param.id
+ * @param {BodyI} req.body
+ * @param {ReqParams} req.params.id
+ * @returns 200 - Success
+ * @exception {Error} 404 - Not Found
+ */
 const updateOne = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const id = req.params.id;
@@ -65,6 +87,12 @@ const updateOne = async (req: Request, res: Response, next: NextFunction): Promi
     }
 };
 
+/**
+ * @param {String} req.params.id
+ * @param {Request} req.body
+ * @returns 200 - success
+ * @exception {Error} 404 - Not Found
+ */
 const deleteOne = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const id = req.params.id;
