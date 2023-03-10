@@ -1,5 +1,7 @@
 {
   "extends": "../tsconfig.json",
+  "include": ["src/**/*.ts", "../global/**/*.ts", "server.ts"],
+  "exclude": ["__tests__"],
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
@@ -7,7 +9,7 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "composite": true,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "rootDir": "../",
@@ -17,5 +19,4 @@
       "@models/*": ["server/src/models/*"],
     }
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "../global/**/*.ts"]
 }

@@ -1,5 +1,5 @@
 import http from 'http';
-import app from './app';
+import app from './src/app';
 import environmentVars from '@global/environmentVars';
 
 const { PORT, NODE_ENV }: typeof environmentVars = environmentVars;

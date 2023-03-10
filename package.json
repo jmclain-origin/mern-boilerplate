@@ -10,7 +10,8 @@
         "build:client": "webpack --config config/webpack.config.client.ts --mode production",
         "build:server": "webpack --config config/webpack.config.server.ts --mode production",
         "lint": "eslint server client --ext .js,.jsx,.ts,.tsx",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "test:server": "jest server/__tests__"
     },
     "lint-staged": {
         "**/*.{js,jsx,ts,tsx}": [
@@ -46,6 +47,7 @@
         "@types/postcss-import": "^14.0.0",
         "@types/react": "^18.0.26",
         "@types/react-dom": "^18.0.10",
+        "@types/supertest": "^2.0.12",
         "@typescript-eslint/eslint-plugin": "^5.48.0",
         "@typescript-eslint/parser": "^5.48.0",
         "autoprefixer": "^10.4.13",
@@ -61,6 +63,7 @@
         "eslint-config-airbnb-typescript": "^17.0.0",
         "eslint-config-prettier": "^8.6.0",
         "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-jest": "^27.2.1",
         "eslint-plugin-prettier": "^4.2.1",
         "eslint-webpack-plugin": "^3.2.0",
         "html-webpack-plugin": "^5.5.0",
@@ -69,6 +72,7 @@
         "lint-staged": "^13.1.0",
         "livereload": "^0.9.3",
         "mini-css-extract-plugin": "^2.7.2",
+        "mongodb-memory-server": "^8.12.0",
         "nodemon": "^2.0.20",
         "nodemon-webpack-plugin": "^4.8.1",
         "npm-run-all": "^4.1.5",
@@ -78,8 +82,9 @@
         "postcss-loader": "^7.0.2",
         "prettier": "^2.8.1",
         "style-loader": "^3.3.1",
+        "supertest": "^6.3.3",
         "tailwindcss": "^3.2.4",
-        "ts-jest": "^29.0.3",
+        "ts-jest": "^29.0.5",
         "ts-loader": "^9.4.2",
         "ts-node": "^10.9.1",
         "typescript": "^4.9.4",
