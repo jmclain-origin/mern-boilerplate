@@ -18,7 +18,7 @@ const getConfig = (env: { [key: string]: string }, _argv: string[]): Configurati
         path: DOTENV_FILE_PATH(env.mode),
     });
     return {
-        entry: SERVER_SRC + '/index.ts',
+        entry: SERVER_SRC + '/server.ts',
         mode: isDev ? 'development' : 'production',
         target: 'node',
         output: {

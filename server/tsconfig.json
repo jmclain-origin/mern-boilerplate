@@ -11,6 +11,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "rootDir": "../",
+    "paths": {
+      "@global/*": ["global/*"],
+      "@services/*": ["server/services/*"],
+      "@models/*": ["server/src/models/*"],
+    }
   },
   "include": ["src/**/*.ts", "test/**/*.ts", "../global/**/*.ts"]
 }

@@ -1,12 +1,13 @@
 import mongoose from 'mongoose';
+import environmentVars from '@global/environmentVars';
 
-const config = process.env;
+const { MONGO_URI, NODE_ENV }: typeof environmentVars = environmentVars;
 
 export const connectDB = async (): Promise<void> => {
     try {
-        const dbUrl = config.MONGO_URI as string;
+        const dbUrl = MONGO_URI as string;
 
-        // if (config.NODE_ENV === 'test') {
+        // if (NODE_ENV === 'test') {
         //     mongoDB = await MongoMemoryServer.create();
         //     dbUrl = mongoDB.getUri();
         // }
@@ -14,9 +15,9 @@ export const connectDB = async (): Promise<void> => {
 
         const conn = await mongoose.connect(dbUrl);
 
-        if (config.NODE_ENV !== 'test') console.log(`MongoDB connected: ${conn.connection.host}`);
+        if (NODE_ENV !== 'test') console.log(`MongoDB connected: ${conn.connection.host}`);
     } catch (err) {
-        if (config.NODE_ENV !== 'test') {
+        if (NODE_ENV !== 'test') {
             console.error(err);
             process.exit(1);
         } else throw err;
@@ -34,3 +35,4 @@ export const disconnectDB = async (): Promise<void> => {
         process.exit(1);
     }
 };
+// https://open.spotify.com/playlist/5P2P8t6rTGutdEpuOAdu9C?si=60ba68cd3e4d4a4c

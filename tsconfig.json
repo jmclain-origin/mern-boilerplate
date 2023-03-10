@@ -12,6 +12,7 @@
         "composite": true,
         "esModuleInterop": true,
         "baseUrl": "./",
+        "declarationDir": "./typescript",
         "paths": {
             "@global/*": ["global/*"]
         }

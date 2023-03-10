@@ -1,11 +1,11 @@
 import path from 'path';
 import express from 'express';
 import environmentVars from '@global/environmentVars';
-import { connectDB } from './db.config';
 
-type ProcVars = typeof environmentVars;
+import { connectDB } from './services/db.config';
+import v1Routes from './api/v1/routes';
 
-const { PORT, NODE_ENV }: ProcVars = environmentVars;
+const { NODE_ENV }: typeof environmentVars = environmentVars;
 
 const app = express();
 
@@ -14,10 +14,7 @@ app.use(express.urlencoded({ extended: false }));
 
 connectDB();
 
-app.get('/api/test', (_request, response) => {
-    response.json({ message: 'Hello World!' });
-    response.end();
-});
+app.use('/api/v1', v1Routes);
 
 if (NODE_ENV === 'production') {
     app.use(express.static(path.resolve(__dirname, 'public')));
@@ -26,4 +23,4 @@ if (NODE_ENV === 'production') {
     });
 }
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+export default app;
