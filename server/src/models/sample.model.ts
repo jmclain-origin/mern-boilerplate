@@ -1,6 +1,12 @@
-import * as mongoose from 'mongoose';
+import { Schema, Document, model } from 'mongoose';
 
-const SampleSchema = new mongoose.Schema({
+export interface ISample extends Document {
+    name: string;
+    age: number;
+    createdAt: Date;
+}
+
+const SampleSchema = new Schema<ISample>({
     name: {
         type: String,
         required: true,
@@ -15,6 +21,6 @@ const SampleSchema = new mongoose.Schema({
     },
 });
 
-const SampleModel = mongoose.model('Sample', SampleSchema);
+const SampleModel = model<ISample>('Sample', SampleSchema);
 
 export default SampleModel;

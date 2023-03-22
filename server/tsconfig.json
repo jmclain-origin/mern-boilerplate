@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "include": ["src/**/*.ts", "../global/**/*.ts", "server.ts"],
-  "exclude": ["__tests__"],
+  // "exclude": ["../__tests__"],
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
@@ -15,8 +15,7 @@
     "rootDir": "../",
     "paths": {
       "@global/*": ["global/*"],
-      "@services/*": ["server/services/*"],
-      "@models/*": ["server/src/models/*"],
+      "@server/*": ["server/src/*"],
     }
   },
 }

@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import app from '../src/app';
+import app from '@server/app';
 
 describe('Test if app is functional', () => {
     it('should export the app', () => {

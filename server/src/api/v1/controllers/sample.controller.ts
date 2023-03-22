@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import Sample from '@models/sample.model';
+import Sample from '@server/models/sample.model';
 
-type BodyI = { name: string; age: number };
+export type BodyI = { name: string; age: number };
 
 /**
  * @param {BodyI} req.body

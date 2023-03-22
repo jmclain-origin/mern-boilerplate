@@ -8,6 +8,7 @@ import paths, { RepositoryPaths } from './paths';
 const isDev = process.env.NODE_ENV === 'development';
 const {
     SERVER_ROOT,
+    SERVER_SRC,
     DOTENV_FILE_PATH,
     BUILD_OUTPUT_DIR,
     ALIAS: { GLOBAL_PATH },
@@ -41,6 +42,7 @@ const getConfig = (env: { [key: string]: string }, _argv: string[]): Configurati
             extensions: ['.ts'],
             alias: {
                 '@global': GLOBAL_PATH,
+                '@server': SERVER_SRC,
             },
         },
         module: {
