@@ -1,5 +1,6 @@
 {
-    "extends": "../tsconfig.json",
+  "extends": "../tsconfig.json",
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
     "compilerOptions": {
       "target": "ES6",
       "lib": [
@@ -23,6 +24,7 @@
       "sourceMap": true,
       "composite": true,
       "types": ["node"],
+      "rootDir": "../",
+      "baseUrl": "./src",
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx"],
   }
