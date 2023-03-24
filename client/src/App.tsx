@@ -3,78 +3,122 @@ import './app.styles.css';
 import { v4 as uuid } from 'uuid';
 import { mockData as DATA } from './assets/mockData';
 
+type QuestionT = typeof DATA[0];
+type AnswerT = { answer: string; score: number };
+type RadioCheckedT = {
+    answer1: boolean;
+    answer2: boolean;
+    answer3: boolean;
+    answer4: boolean;
+};
+type StateT = {
+    questionList: QuestionT[];
+    currentQuestionIndex: number | null;
+    answerScoreHistory: Array<number>;
+    canProceed: boolean;
+    isChecked: RadioCheckedT;
+};
+
 const App: FC = () => {
-    type QuestionT = typeof DATA[0];
-    type StateT = { currentScore: number; completedList: Array<string>; currentQuestion?: QuestionT };
-
     const [state, setState] = useState<StateT>({
-        currentScore: 0,
-        completedList: [],
+        questionList: [...DATA],
+        currentQuestionIndex: null,
+        answerScoreHistory: [],
+        canProceed: false,
+        isChecked: { answer1: false, answer2: false, answer3: false, answer4: false },
     });
-
     useEffect(() => {
-        console.log('🚀 ~ file: App.tsx:14 ~ state:', state);
-    }, [state.completedList.length, state.currentQuestion]);
-    const getQuestion = (questionId?: string) => {
-        if (questionId) {
-            const question = DATA.find((q) => q?.id === questionId);
-            return question;
-        } else {
-            const remainingQuestions = DATA.filter((q) => !state.completedList.includes(q.id));
-            return remainingQuestions[Math.floor(Math.random() * remainingQuestions.length)];
-        }
+        setState((prevState) => {
+            const shuffledList: QuestionT[] = [];
+            const copyStateData = [...prevState.questionList];
+            while (shuffledList.length < DATA.length) {
+                const randomIndex = Math.floor(Math.random() * DATA.length);
+                if (!shuffledList.find(({ id }) => copyStateData[randomIndex].id === id)) {
+                    shuffledList.push(copyStateData[randomIndex]);
+                }
+            }
+            return {
+                ...prevState,
+                questionList: shuffledList,
+            };
+        });
+    }, []);
+    const handleNext = (score: number) => {
+        setState((prevState) => {
+            const copyRadioState = { ...prevState.isChecked };
+            for (const key in copyRadioState) {
+                copyRadioState[key as keyof RadioCheckedT] = false;
+            }
+
+            return {
+                ...prevState,
+                currentQuestionIndex:
+                    prevState.currentQuestionIndex !== null &&
+                    prevState.currentQuestionIndex + 1 < prevState.questionList.length
+                        ? prevState.currentQuestionIndex + 1
+                        : prevState.currentQuestionIndex,
+                answerScoreHistory: prevState.answerScoreHistory.concat(score),
+                canProceed: false,
+                isChecked: copyRadioState,
+            };
+        });
     };
-    const nextQuestion = () => {
-        const question = getQuestion();
-        console.log('🚀 ~ file: App.tsx:27 ~ setState ~ prevState:', state);
-        if (question) {
-            setState((prevState) => {
-                const currentQuestionId = prevState.currentQuestion?.id as string;
-                return {
-                    ...prevState,
-                    // currentScore: prevState.currentScore + question.score,
-                    completedList: [...prevState.completedList, currentQuestionId],
-                    currentQuestion: question,
-                };
-            });
-        }
+    const handlePrevious = () => {
+        setState((prevState) => {
+            const copyRadioState = { ...prevState.isChecked };
+            for (const key in copyRadioState) {
+                copyRadioState[key as keyof RadioCheckedT] = false;
+            }
+            return {
+                ...prevState,
+                currentQuestionIndex:
+                    prevState.currentQuestionIndex !== null && prevState.currentQuestionIndex > 0
+                        ? prevState.currentQuestionIndex - 1
+                        : prevState.currentQuestionIndex,
+                answerScoreHistory: prevState.answerScoreHistory.slice(0, -1),
+                canProceed: false,
+                isChecked: copyRadioState,
+            };
+        });
     };
-    const previousQuestion = () => {
-        const listCopy = state.completedList;
-        const lastQuestion = getQuestion(listCopy[listCopy.length - 1]);
-        if (lastQuestion) {
-            setState((prevState) => {
-                listCopy.pop();
-                return {
-                    ...prevState,
-                    // currentScore: prevState.currentScore - lastQuestion.score,
-                    completedList: [...listCopy],
-                    currentQuestion: lastQuestion,
-                };
-            });
-        }
+    const handleChange = (event: SyntheticEvent<HTMLInputElement>) => {
+        const targetEle = event.target as HTMLInputElement;
+        const radioKey = targetEle.id;
+        setState((prevState) => {
+            const copyState = { ...prevState };
+            const checkKeyCopy = { ...copyState.isChecked };
+            for (const key in checkKeyCopy) {
+                checkKeyCopy[key as keyof RadioCheckedT] = false;
+            }
+            copyState.isChecked = checkKeyCopy;
+            copyState.isChecked[radioKey as keyof RadioCheckedT] = targetEle.checked;
+            return { ...copyState, canProceed: true };
+        });
     };
     const handleSubmit = (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
-        console.log('🚀 ~ file: App.tsx:58 ~ handleSubmit ~ event:', event);
-
         event.preventDefault();
+        const formControl = event.target as HTMLFormElement;
+        const controlEleCol = formControl.elements;
+        let checkedScore = 0;
+        for (const ele in controlEleCol) {
+            const controlEle = controlEleCol[ele] as HTMLInputElement;
+            if (controlEle.type === 'radio' && controlEle.checked) checkedScore = parseInt(controlEle.value);
+        }
         const buttonClicked = event.nativeEvent.submitter as HTMLButtonElement;
-        console.log(state.currentQuestion);
         switch (buttonClicked.value) {
             case 'start':
-                setState((prevState) => ({ ...prevState, currentQuestion: getQuestion() }));
+                setState((prevState) => ({ ...prevState, currentQuestionIndex: 0 }));
                 break;
             case 'next':
-                nextQuestion();
+                handleNext(checkedScore);
                 break;
             case 'previous':
-                previousQuestion();
+                handlePrevious();
                 break;
             default:
                 break;
         }
     };
-
     return (
         <div className="h-screen w-100">
             <div className="h-full pt-32">
@@ -82,26 +126,42 @@ const App: FC = () => {
                     <h1 className="text-4xl font-bold text-gray-900">Hello World</h1>
                     <div className="min-h-96 w-3/4 bg-slate-200 mt-12 p-4 pb-8">
                         <h2 className="text-center text-2xl mb-8">
-                            {state.currentQuestion ? state.currentQuestion.question : 'Beginning Prompt'}
+                            {state.currentQuestionIndex
+                                ? state.questionList[state.currentQuestionIndex].question
+                                : 'Beginning Prompt'}
                         </h2>
                         <form onSubmit={handleSubmit} className="flex flex-col justify-center items-center relative">
-                            {state.currentQuestion &&
-                                state.currentQuestion.response.map((obj: typeof state.currentQuestion.response[0]) => (
-                                    <div key={uuid()} className="w-4/5 bg-white px-8 py-10 mb-2">
-                                        <input type="radio" name="answer" id="answer" value={obj.score} />
-                                        <label className="px-2" htmlFor="answer">
-                                            {obj.answer}
-                                        </label>
-                                    </div>
-                                ))}
+                            {state.currentQuestionIndex !== null &&
+                                state.questionList[state.currentQuestionIndex].response.map(
+                                    (obj: AnswerT, index: number) => {
+                                        const checked: boolean =
+                                            state.isChecked[('answer' + (index + 1)) as keyof RadioCheckedT];
+                                        return (
+                                            <div key={uuid()} className="w-4/5 bg-white px-8 py-10 mb-2">
+                                                <input
+                                                    type="radio"
+                                                    id={`answer${index + 1}`}
+                                                    name="answer"
+                                                    value={obj.score}
+                                                    checked={checked}
+                                                    onChange={handleChange}
+                                                />
+                                                <label className="px-2" htmlFor={`answer${index + 1}`}>
+                                                    {`${obj.score}---${obj.answer}`}
+                                                </label>
+                                            </div>
+                                        );
+                                    },
+                                )}
 
                             <div className="flex justify-around flex-row-reverse w-1/2 mt-3">
-                                {state.currentQuestion ? (
+                                {state.currentQuestionIndex !== null ? (
                                     <>
                                         <button
                                             type="submit"
                                             value="next"
-                                            className="bg-slate-700 text-white px-4 py-2"
+                                            className="bg-slate-700 text-white px-4 py-2 disabled:opacity-60"
+                                            disabled={!state.canProceed}
                                         >
                                             Next Question
                                         </button>
@@ -119,10 +179,15 @@ const App: FC = () => {
                                     </button>
                                 )}
                             </div>
-                            {state.currentQuestion && (
+                            {state.currentQuestionIndex !== null && (
                                 <span className="absolute right-2 bottom-2">{`Question ${
-                                    state.completedList.length + 1
-                                } of ${DATA.length}`}</span>
+                                    state.currentQuestionIndex + 1
+                                } of ${state.questionList.length}`}</span>
+                            )}
+                            {state.answerScoreHistory.length > 0 && (
+                                <span className="absolute left-2 bottom-2">
+                                    {state.answerScoreHistory.reduce((a, b) => a + b)}
+                                </span>
                             )}
                         </form>
                     </div>

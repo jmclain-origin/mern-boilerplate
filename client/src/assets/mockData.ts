@@ -53,7 +53,7 @@ export const mockData = [
             },
             {
                 answer: 'rutrum rutrum neque aenean auctor gravida sem praesent id massa id nisl venenatis lacinia aenean sit amet',
-                score2: 9,
+                score: 9,
             },
             {
                 answer: 'volutpat eleifend donec ut dolor morbi vel lectus in quam fringilla rhoncus mauris enim',
