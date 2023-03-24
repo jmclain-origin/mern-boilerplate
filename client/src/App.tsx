@@ -1,5 +1,5 @@
 import { FC, SyntheticEvent, useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'heroicons-react';
+import { ChevronLeft, ChevronRight, AtSymbol } from 'heroicons-react';
 import { v4 as uuid } from 'uuid';
 import { mockData as DATA } from './assets/mockData';
 
@@ -17,6 +17,8 @@ type StateT = {
     answerScoreHistory: Array<number>;
     canProceed: boolean;
     isChecked: RadioCheckedT;
+    isCompleted: boolean;
+    finalScore: number;
 };
 
 const App: FC = () => {
@@ -26,7 +28,13 @@ const App: FC = () => {
         answerScoreHistory: [],
         canProceed: false,
         isChecked: { answer1: false, answer2: false, answer3: false, answer4: false },
+        isCompleted: false,
+        finalScore: 0,
     });
+    const { questionList, currentQuestionIndex, canProceed, isChecked, isCompleted, finalScore } = state;
+    useEffect(() => {
+        console.log('🚀 ~ file: App.tsx:32 ~ state:', state);
+    }, [state]);
     useEffect(() => {
         setState((prevState) => {
             const shuffledList: QuestionT[] = [];
@@ -115,62 +123,100 @@ const App: FC = () => {
             case 'previous':
                 handlePrevious();
                 break;
+            case 'finish':
+                handleNext(checkedScore);
+                setState((prevState) => ({
+                    ...prevState,
+                    isCompleted: true,
+                    finalScore: prevState.answerScoreHistory.reduce((a, b) => a + b),
+                }));
+                break;
+            case 'submit':
+                console.log('��� ~ file: App.tsx:100 ~ SUBMIT EMAIL FEATURE ~', finalScore);
+                break;
             default:
                 break;
         }
+    };
+    const renderHeadingText = (questionText: string, qIndex: number | null, completed: boolean): string => {
+        if (qIndex !== null && qIndex >= 0 && !completed) return questionText;
+        else if (completed) return 'Final Results';
+        else return 'Start intro prompting';
     };
     return (
         <div className="h-screen w-100">
             <div className="h-full pt-32">
                 <div className="flex flex-col items-center justify-center">
-                    <h1 className="text-4xl font-bold text-black">Questioner</h1>
+                    <h1 className="text-4xl font-bold text-black">Assessment Questioner</h1>
                     <div className="min-h-96 w-2/4 bg-gray-200 mt-12 p-4 pb-8 rounded-lg shadow-xl">
                         <h2 className="text-center text-2xl mb-8 font-semibold">
-                            {state.currentQuestionIndex
-                                ? state.questionList[state.currentQuestionIndex].question
-                                : 'Start intro prompting'}
+                            {renderHeadingText(
+                                currentQuestionIndex !== null ? questionList[currentQuestionIndex].question : '',
+                                currentQuestionIndex,
+                                isCompleted,
+                            )}
                         </h2>
                         <form onSubmit={handleSubmit} className="flex flex-col justify-center items-center relative">
-                            {state.currentQuestionIndex !== null &&
-                                state.questionList[state.currentQuestionIndex].response.map(
-                                    (obj: AnswerT, index: number) => {
-                                        const checked: boolean =
-                                            state.isChecked[('answer' + (index + 1)) as keyof RadioCheckedT];
-                                        return (
-                                            <div
-                                                key={uuid()}
-                                                className="w-4/5 bg-white px-8 py-10 mb-2 rounded-2xl shadow-md"
-                                            >
-                                                <input
-                                                    type="radio"
-                                                    id={`answer${index + 1}`}
-                                                    className="accent-slate-600 w-5 h-5 align-middle"
-                                                    name="answer"
-                                                    value={obj.score}
-                                                    checked={checked}
-                                                    onChange={handleChange}
-                                                />
-                                                <label className="px-2" htmlFor={`answer${index + 1}`}>
-                                                    {`${obj.score}---${obj.answer}`}
-                                                </label>
-                                            </div>
-                                        );
-                                    },
-                                )}
+                            {currentQuestionIndex !== null &&
+                                !isCompleted &&
+                                questionList[currentQuestionIndex].response.map((obj: AnswerT, index: number) => {
+                                    const checked: boolean = isChecked[('answer' + (index + 1)) as keyof RadioCheckedT];
+                                    return (
+                                        <div
+                                            key={uuid()}
+                                            className="w-4/5 bg-white px-8 py-10 mb-2 rounded-2xl shadow-md"
+                                        >
+                                            <input
+                                                type="radio"
+                                                id={`answer${index + 1}`}
+                                                className="accent-slate-600 w-5 h-5 align-middle"
+                                                name="answer"
+                                                value={obj.score}
+                                                checked={checked}
+                                                onChange={handleChange}
+                                            />
+                                            <label className="px-2" htmlFor={`answer${index + 1}`}>
+                                                {`${obj.score}---${obj.answer}`}
+                                            </label>
+                                        </div>
+                                    );
+                                })}
 
+                            {isCompleted && (
+                                <>
+                                    <h2 className="text-xl">Your score is {finalScore}</h2>
+                                    <div className="w-1/3 relative">
+                                        <AtSymbol
+                                            size={20}
+                                            className="absolute inset-y-0 left-1 align-middle opacity-40 h-full"
+                                        />
+                                        <input
+                                            type="email"
+                                            className="input-default pl-6"
+                                            placeholder="Email address"
+                                        />
+                                    </div>
+                                </>
+                            )}
                             <div className="flex justify-around flex-row-reverse w-1/2 mt-3">
-                                {state.currentQuestionIndex !== null ? (
+                                {currentQuestionIndex !== null && !isCompleted ? (
                                     <>
                                         <button
                                             type="submit"
-                                            value="next"
-                                            className={`btn-default${!state.canProceed ? ' cursor-not-allowed' : ''}`}
-                                            disabled={!state.canProceed}
+                                            value={currentQuestionIndex >= questionList.length - 1 ? 'finish' : 'next'}
+                                            className={`btn-default${!canProceed ? ' cursor-not-allowed' : ''}`}
+                                            disabled={!canProceed}
                                         >
-                                            <span className="font-semibold">Next Question</span>
-                                            <ChevronRight className="w-5 h-5 inline align-middle" />
+                                            <span className="font-semibold">
+                                                {currentQuestionIndex >= questionList.length - 1
+                                                    ? 'Complete'
+                                                    : 'Next Question'}
+                                            </span>
+                                            {currentQuestionIndex >= questionList.length - 1 && (
+                                                <ChevronRight className="w-5 h-5 inline align-middle" />
+                                            )}
                                         </button>
-                                        {state.currentQuestionIndex !== 0 && (
+                                        {currentQuestionIndex !== 0 && (
                                             <button type="submit" value="previous" className="btn-default">
                                                 <ChevronLeft className="w-5 h-5 inline" />
                                                 <span className="align-middle font-semibold">Previous Question</span>
@@ -178,20 +224,19 @@ const App: FC = () => {
                                         )}
                                     </>
                                 ) : (
-                                    <button type="submit" value="start" className="btn-default font-semibold">
-                                        Get Started
+                                    <button
+                                        type="submit"
+                                        value={isCompleted ? 'submit' : 'start'}
+                                        className="btn-default font-semibold"
+                                    >
+                                        {isCompleted ? 'Submit Email' : 'Get Started'}
                                     </button>
                                 )}
                             </div>
-                            {state.currentQuestionIndex !== null && (
-                                <span className="absolute right-2 bottom-2">{`Question ${
-                                    state.currentQuestionIndex + 1
-                                } of ${state.questionList.length}`}</span>
-                            )}
-                            {state.answerScoreHistory.length > 0 && (
-                                <span className="absolute left-2 bottom-2">
-                                    {state.answerScoreHistory.reduce((a, b) => a + b)}
-                                </span>
+                            {currentQuestionIndex !== null && !isCompleted && (
+                                <span className="absolute right-2 bottom-2">{`Question ${currentQuestionIndex + 1} of ${
+                                    questionList.length
+                                }`}</span>
                             )}
                         </form>
                     </div>
