@@ -1,5 +1,5 @@
 import { FC, SyntheticEvent, useState, useEffect } from 'react';
-import './app.styles.css';
+import { ChevronLeft, ChevronRight } from 'heroicons-react';
 import { v4 as uuid } from 'uuid';
 import { mockData as DATA } from './assets/mockData';
 
@@ -123,12 +123,12 @@ const App: FC = () => {
         <div className="h-screen w-100">
             <div className="h-full pt-32">
                 <div className="flex flex-col items-center justify-center">
-                    <h1 className="text-4xl font-bold text-gray-900">Hello World</h1>
-                    <div className="min-h-96 w-3/4 bg-slate-200 mt-12 p-4 pb-8">
-                        <h2 className="text-center text-2xl mb-8">
+                    <h1 className="text-4xl font-bold text-black">Questioner</h1>
+                    <div className="min-h-96 w-2/4 bg-gray-200 mt-12 p-4 pb-8 rounded-lg shadow-xl">
+                        <h2 className="text-center text-2xl mb-8 font-semibold">
                             {state.currentQuestionIndex
                                 ? state.questionList[state.currentQuestionIndex].question
-                                : 'Beginning Prompt'}
+                                : 'Start intro prompting'}
                         </h2>
                         <form onSubmit={handleSubmit} className="flex flex-col justify-center items-center relative">
                             {state.currentQuestionIndex !== null &&
@@ -137,10 +137,14 @@ const App: FC = () => {
                                         const checked: boolean =
                                             state.isChecked[('answer' + (index + 1)) as keyof RadioCheckedT];
                                         return (
-                                            <div key={uuid()} className="w-4/5 bg-white px-8 py-10 mb-2">
+                                            <div
+                                                key={uuid()}
+                                                className="w-4/5 bg-white px-8 py-10 mb-2 rounded-2xl shadow-md"
+                                            >
                                                 <input
                                                     type="radio"
                                                     id={`answer${index + 1}`}
+                                                    className="accent-slate-600 w-5 h-5 align-middle"
                                                     name="answer"
                                                     value={obj.score}
                                                     checked={checked}
@@ -160,21 +164,21 @@ const App: FC = () => {
                                         <button
                                             type="submit"
                                             value="next"
-                                            className="bg-slate-700 text-white px-4 py-2 disabled:opacity-60"
+                                            className={`btn-default${!state.canProceed ? ' cursor-not-allowed' : ''}`}
                                             disabled={!state.canProceed}
                                         >
-                                            Next Question
+                                            <span className="font-semibold">Next Question</span>
+                                            <ChevronRight className="w-5 h-5 inline align-middle" />
                                         </button>
-                                        <button
-                                            type="submit"
-                                            value="previous"
-                                            className="bg-slate-700 text-white px-4 py-2"
-                                        >
-                                            Previous Question
-                                        </button>
+                                        {state.currentQuestionIndex !== 0 && (
+                                            <button type="submit" value="previous" className="btn-default">
+                                                <ChevronLeft className="w-5 h-5 inline" />
+                                                <span className="align-middle font-semibold">Previous Question</span>
+                                            </button>
+                                        )}
                                     </>
                                 ) : (
-                                    <button type="submit" value="start" className="bg-slate-700 text-white px-4 py-2">
+                                    <button type="submit" value="start" className="btn-default font-semibold">
                                         Get Started
                                     </button>
                                 )}

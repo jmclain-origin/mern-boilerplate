@@ -61,6 +61,18 @@ const getConfig = (_env: { [key: string]: string }, operation: { [key: string]: 
                         },
                     ],
                 },
+                {
+                    test: /\.(png|jpe?g|gif)$/i,
+                    use: [
+                        {
+                            loader: 'file-loader',
+                        },
+                    ],
+                },
+                {
+                    test: /\.svg$/,
+                    loader: 'svg-inline-loader',
+                },
             ],
         },
         devtool: process.env.NODE_ENV === 'production' ? undefined : 'source-map',
